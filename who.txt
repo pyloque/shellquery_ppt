@@ -1,4 +1,6 @@
 I:1
 You:2
+It:2
 He:3
+They:3
 She:4

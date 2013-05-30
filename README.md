@@ -7,11 +7,9 @@ sed -n '/PATTERN/p' questions.txt
 ## sort ##
 sort -t';' -k1 -n -r questions.txt
 
-## distinct ##
-sort -u
-
 ## limit ##
 head -n5 
+
 tail -n5
 
 ## join ##
@@ -20,7 +18,9 @@ join
     who.txt
     I:1
     You:2
+    It:2
     He:3
+    They:3
     She:4
     
     fruit.txt
@@ -33,8 +33,17 @@ join
 
     I:Apple
     You:Banana
+    It:Banana
     He:Pear
+    They:Pear
     She:Orange
 
 ## group by ##
 awk
+
+`join -t: -j1 2 -j2 1 -o 1.1 2.2 who.txt fruit.txt | awk -F: '{a[$2]+=1;}END{for(i in a)print i,a[i]}'`
+
+    Pear 2
+    Apple 1
+    Banana 2
+    Orange 1
