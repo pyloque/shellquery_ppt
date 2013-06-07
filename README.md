@@ -5,6 +5,7 @@
     group_by    awk '{a[$2] += $3}END{for(i in a)print i";"a[i]}'
     order_by    sort -r -k2,3 -n
     join    join -t';' -1 1 -2 1 -o 1.1 2.2 file1 file2
+    distinct    uniq
     limit   head -n10
     offset  sed -n 'offset,offset+limit p'
 
