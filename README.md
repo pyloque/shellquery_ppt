@@ -1,49 +1,48 @@
-## select ##
-cut -d';' -f1,2 questions.txt
+## 总数  ##
+    select count(1) from rank_item
 
-## where ##
-sed -n '/PATTERN/p' questions.txt
+    wc -l rank_items.txt | cut -d' ' -f1
 
-## sort ##
-sort -t';' -k1 -n -r questions.txt
+    cat rank_items.txt | wc -l
 
-## limit ##
-head -n5 
+## 性情小组活跃用户数量 ##
+    select count(distinct(object_name))
+    from rank_item
+    where rank_name='group_hot_member:30'
 
-tail -n5
+    sed -n -e '/"group_hot_member\:30"\;/ p' rank_items.txt | cut -d';' -f3 | sort | uniq | wc -l
 
-## join ##
-join
+## 性情小组活跃用户TOP10  ##
 
-    who.txt
-    I:1
-    You:2
-    It:2
-    He:3
-    They:3
-    She:4
-    
-    fruit.txt
-    1:Apple
-    2:Banana
-    3:Pear
-    4:Orange
+    select object_name,sum(score) total_score
+    from rank_item
+    where rank_name='group_hot_member:30'
+    group by object_name
+    order by total_score desc
+    limit 10
 
-`join -t: -j1 2 -j2 1 -o 1.1 2.2 who.txt fruit.txt`
+    sed -n -e '/"group_hot_member\:30"\;/ p' rank_items.txt | awk -F';' '{a[$3]+=$5}END{for(i in a)print i,a[i]}' | sort -t' ' -n -r -k 2 | head -n 10
 
-    I:Apple
-    You:Banana
-    It:Banana
-    He:Pear
-    They:Pear
-    She:Orange
+##  活跃小组按总分倒排 ##
+    select substr(rank_name,18) group_id, sum(score) total_score
+    from rank_item
+    where rank_name like 'group_hot_member:%'
+    group by group_id
+    order by total_score desc
+    limit 100
 
-## group by ##
-awk
+    sed -n -e '/"group_hot_member\:/ p' rank_items.txt | cut -d';' -f2,5 | sed -e s/\"//g -e 's/group_hot_member\://g' | awk -F';' '{a[$1]+=$2}END{for(i in a)print i,a[i]}' | sort -t' ' -n -r -k2 | head -n100
 
-`join -t: -j1 2 -j2 1 -o 1.1 2.2 who.txt fruit.txt | awk -F: '{a[$2]+=1;}END{for(i in a)print i,a[i]}'`
+## 活跃小组按总分倒排（显示小组名称） ##
+    select b.group_id,a.total_score from(
+    select substr(rank_name,18) group_id, sum(score) total_score
+    from rank_item
+    where rank_name like 'group_hot_member:%'
+    group by group_id
+    order by total_score desc
+    limit 100
+    ) a join group b on a.group_id=b.id
 
-    Pear 2
-    Apple 1
-    Banana 2
-    Orange 1
+    sed -n -e '/"group_hot_member\:/ p' rank_items.txt | cut -d';' -f2,5 | sed -e s/\"//g -e 's/group_hot_member\://g' | awk -F';' '{a[$1]+=$2}END{for(i in a)print i";"a[i]}' | sort -t';' -n -r -k2 | head -n100 | sort -n -t';' -k1 > /tmp/a.txt;
+    sed -e s/\"//g groups.txt | cut -d';' -f1,2 | sort -n -t';' -k 1 > /tmp/b.txt;
+    join -t';' -1 1 -2 1 -o2.2 1.2 /tmp/a.txt /tmp/b.txt | sort -t';' -k2 -n -r;

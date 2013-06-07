@@ -1,4 +1,0 @@
-1:Apple
-2:Banana
-3:Pear
-4:Orange

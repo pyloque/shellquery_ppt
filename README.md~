@@ -1,0 +1,27 @@
+## 总数  ##
+    select count(1) from rank_item
+
+    wc -l rank_items.txt | cut -d' ' -f1
+
+    cat rank_items.txt | wc -l
+
+## 性情小组活跃用户数量 ##
+    select count(distinct(object_name))
+    from rank_item
+    where rank_name='group_hot_member:30'
+
+    sed -n -e '/"group_hot_member\:30"\;/ p' rank_items.txt | cut -d';' -f3 | sort | uniq | wc -l
+
+## 性情小组活跃用户TOP10  ##
+
+    select object_name,sum(score) total_score
+    from rank_item
+    where rank_name='group_hot_member:30'
+    group by object_name
+    order by total_score desc
+    limit 10
+
+    sed -n -e '/"group_hot_member\:30"\;/ p' rank_items.txt | awk -F';' '{a[$3]+=$5}END{for(i in a)print i,a[i]}' | sort -t' ' -n -r -k 2 | head -n 10
+
+##  活跃小组按总分倒排 ##
+
