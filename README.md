@@ -9,6 +9,10 @@
     limit   head -n10
     offset  sed -n 'offset,offset+limit p'
 
+## 类比 ##
+
+1. 写命令就像写sql
+2. 写shell脚本就像写存储过程
 
 ## 总数  ##
     select count(1) from rank_item
