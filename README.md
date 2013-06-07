@@ -1,3 +1,14 @@
+## sql与shell对应关系 ##
+    select  cut -d';' -f1,2, awk -F';' {print $1';'$2}
+    table   file /tmp/file
+    filter  sed -n -e '/pattern/', awk -F';' '$2 > 20 {print $0}'
+    group_by    awk '{a[$2] += $3}END{for(i in a)print i";"a[i]}'
+    order_by    sort -r -k2,3 -n
+    join    join -t';' -1 1 -2 1 -o 1.1 2.2 file1 file2
+    limit   head -n10
+    offset  sed -n 'offset,offset+limit p'
+
+
 ## 总数  ##
     select count(1) from rank_item
 
@@ -46,3 +57,5 @@
     sed -n -e '/"group_hot_member\:/ p' rank_items.txt | cut -d';' -f2,5 | sed -e s/\"//g -e 's/group_hot_member\://g' | awk -F';' '{a[$1]+=$2}END{for(i in a)print i";"a[i]}' | sort -t';' -n -r -k2 | head -n100 | sort -n -t';' -k1 > /tmp/a.txt;
     sed -e s/\"//g groups.txt | cut -d';' -f1,2 | sort -n -t';' -k 1 > /tmp/b.txt;
     join -t';' -1 1 -2 1 -o2.2 1.2 /tmp/a.txt /tmp/b.txt | sort -t';' -k2 -n -r;
+
+
