@@ -35,6 +35,17 @@
 
     sed -n -e '/"group_hot_member\:30"\;/ p' rank_items.txt | awk -F';' '{a[$3]+=$5}END{for(i in a)print i,a[i]}' | sort -t' ' -n -r -k 2 | head -n 10
 
+## 性情小组活跃用户(总分大于80的)  ##
+
+    select object_name,sum(score) total_score
+    from rank_item
+    where rank_name='group_hot_member:30'
+    group by object_name
+    order by total_score desc
+    limit 10
+
+    sed -n -e '/"group_hot_member\:30"\;/ p' rank_items.txt | awk -F';' '{a[$3]+=$5}END{for(i in a)print i,a[i]}' | awk -F' ' '$2 > 80 {print $0}' |sort -t' ' -n -r -k 2 | head -n 10
+
 ##  活跃小组按总分倒排 ##
     select substr(rank_name,18) group_id, sum(score) total_score
     from rank_item
