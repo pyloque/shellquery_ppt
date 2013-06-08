@@ -1,6 +1,6 @@
 ## sql与shell对应关系 ##
-    select  cut -d';' -f1,2, awk -F';' {print $1';'$2}
     table   file /tmp/file
+    select  cut -d';' -f1,2, awk -F';' {print $1';'$2}
     filter  sed -n -e '/pattern/', awk -F';' '$2 > 20 {print $0}'
     group_by    awk '{a[$2] += $3}END{for(i in a)print i";"a[i]}'
     order_by    sort -r -k2,3 -n
@@ -8,6 +8,10 @@
     distinct    uniq
     limit   head -n10
     offset  sed -n 'offset,offset+limit p'
+    update sed -n -e -i 's/pattern/newvalue/g'
+    insert sed '/pattern/ a new line content' -i
+    delete sed '/pattern/ d' -i
+
 
 ## 类比 ##
 
@@ -70,8 +74,7 @@
     limit 100
     ) a join group b on a.group_id=b.id
 
-    sed -n -e '/"group_hot_member\:/ p' rank_items.txt | cut -d';' -f2,5 | sed -e s/\"//g -e 's/group_hot_member\://g' | awk -F';' '{a[$1]+=$2}END{for(i in a)print i";"a[i]}' | sort -t';' -n -r -k2 | head -n100 | sort -n -t';' -k1 > /tmp/a.txt;
-    sed -e s/\"//g groups.txt | cut -d';' -f1,2 | sort -n -t';' -k 1 > /tmp/b.txt;
+    sed -n -e '/"group_hot_member\:/ p' rank_items.txt | cut -d';' -f2,5 | sed -e s/\"//g -e 's/group_hot_member\://g' | awk -F';' '{a[$1]+=$2}END{for(i in a)print i";"a[i]}' | sort -t';' -n -r -k2 | head -n100 | sort -n -t';' -k1 > /tmp/a.txt &;
+    sed -e s/\"//g groups.txt | cut -d';' -f1,2 | sort -n -t';' -k 1 > /tmp/b.txt &;
+    wait;
     join -t';' -1 1 -2 1 -o2.2 1.2 /tmp/a.txt /tmp/b.txt | sort -t';' -k2 -n -r;
-
-
