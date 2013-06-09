@@ -1,16 +1,16 @@
 ## sql与shell对应关系 ##
-    table   file /tmp/file
-    select  cut -d';' -f1,2, awk -F';' {print $1';'$2}
-    filter  sed -n -e '/pattern/', awk -F';' '$2 > 20 {print $0}'
-    group_by    awk '{a[$2] += $3}END{for(i in a)print i";"a[i]}'
-    order_by    sort -r -k2,3 -n
-    join    join -t';' -1 1 -2 1 -o 1.1 2.2 file1 file2
-    distinct    uniq
-    limit   head -n10
-    offset  sed -n 'offset,offset+limit p'
-    update sed -n -e -i 's/pattern/newvalue/g'
-    insert sed '/pattern/ a new line content' -i
-    delete sed '/pattern/ d' -i
+    table   file || /tmp/file ==> data source
+    select  cut -d';' -f1,2 || awk -F';' {print $1';'$2} ==> map
+    filter  sed -n -e '/pattern/' || awk -F';' '$2 > 20 {print $0}' ==> filter
+    group_by    awk '{a[$2] += $3}END{for(i in a)print i";"a[i]}' ==> reduce
+    order_by    sort -r -k2,3 -n ==> sort
+    join    join -t';' -1 1 -2 1 -o 1.1 2.2 file1 file2 ==> join
+    distinct    uniq || sort -u ==> reduce
+    limit   head -n10 ==> slice
+    offset  sed -n 'offset,offset+limit p' ==> slice
+    update sed -n -e -i 's/pattern/newvalue/g' ==> update
+    insert sed '/pattern/ a new line content' -i ==> insert
+    delete sed '/pattern/ d' -i ==> delete
 
 
 ## 类比 ##
