@@ -79,6 +79,7 @@
     join -t';' -1 1 -2 1 -o2.2 1.2 /tmp/a.txt /tmp/b.txt | sort -t';' -k2 -n -r;
 
 ## 其它特殊的非常有用的shell命令 ##
+    seq 生成序列，类似于python:range
     tee 管道分流
     xargs 分割参数，并行计算
     awk '{system("cmd")}' 逐行调用外部命令
