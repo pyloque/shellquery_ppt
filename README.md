@@ -79,10 +79,12 @@
     join -t';' -1 1 -2 1 -o2.2 1.2 /tmp/a.txt /tmp/b.txt | sort -t';' -k2 -n -r;
 
 ## 其它特殊的非常有用的shell命令 ##
+    yes 无限重复，配合head使用
     seq 生成序列，类似于python:range
     paste 按列合并文件
     tee 管道分流
     xargs 分割参数，并行计算
+    parallel 并行计算
     awk '{system("cmd")}' 逐行调用外部命令
 
 ## 牛逼的管道合并和分流操作符 ##
@@ -97,9 +99,12 @@
 ## 最后来一个比较酷的 抓取所有主题站所有文章的缩略图##
     curl http://www.guokr.com/site/ 2>/dev/null | awk '/<ul class=\"all-sites\">/{p=1};p;/<\/ul>/{p=0}' | sed -n '/<a itemprop/p' | sed 's/  //g' | cut -d' 'f3 | cut -d'"' -f2 | awk '{printf("%s ", $1) ; system("curl "$0" 2>/dev/null | grep 末页 | cut -d= -f3 | cut -d\047\042\047 -f1")}' | awk -F' ' '{printf("%s ",$1);system("seq -s\047 \047 "$2)}' | awk -F' ' '{for(i=2;i<NF;i++){print $1"?page="$i}}' | xargs -P 10 -n 1 curl 2>/dev/null | awk '/<div class=\"article-pic\">/{p=1};p;/<\/div>/{p=0}' | sed -n '/<img src/ p' | sed 's/  //g' | cut -d'"' -f8 | sed -n '/img1\.guokr\.com\/thumbnail.*166x119\.\(jpg\|png\|gif\)$/p' > seeds.txt;
     cat seeds.txt | sort -u | xargs -P 50 -n 1 wget;
+    paste <(yes "wget" | head -n `cat seeds.txt | wc -l`) seeds.txt -d' ' | parallel -j20;
+
+
 
 ## 推荐资源 ##
     《Unix Shell编程》
     《The AWK programming language》
     《Sed & Awk 101 Hacks》
-    http://www.gnu.org/software/parallel/
+     GNU Parallel http://www.gnu.org/software/parallel/
