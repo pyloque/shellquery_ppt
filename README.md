@@ -31,6 +31,9 @@
 
     sed -n -e '/"group_hot_member\:30"\;/ p' rank_items.txt | cut -d';' -f3 | sort | uniq | wc -l
 
+## 性能 ##
+    ![并发模型](http://www.plc100.com/siemens/shili/chuansongdai.files/image002.jpg)
+
 ## 性情小组活跃用户TOP10  ##
 
     select object_name,sum(score) total_score
@@ -100,8 +103,6 @@
     curl http://www.guokr.com/site/ 2>/dev/null | awk '/<ul class=\"all-sites\">/{p=1};p;/<\/ul>/{p=0}' | sed -n '/<a itemprop/p' | sed 's/  //g' | cut -d' ' -f3 | cut -d'"' -f2 | awk '{printf("%s ", $1) ; system("curl "$0" 2>/dev/null | grep 末页 | cut -d= -f3 | cut -d\047\042\047 -f1")}' | awk -F' ' '{printf("%s ",$1);system("seq -s\047 \047 "$2)}' | awk -F' ' '{for(i=2;i<NF;i++){print $1"?page="$i}}' | xargs -P 10 -n 1 curl 2>/dev/null | awk '/<div class=\"article-pic\">/{p=1};p;/<\/div>/{p=0}' | sed -n '/<img src/ p' | sed 's/  //g' | cut -d'"' -f8 | sed -n '/img1\.guokr\.com\/thumbnail.*166x119\.\(jpg\|png\|gif\)$/p' > seeds.txt;
     cat seeds.txt | sort -u | xargs -P 50 -n 1 wget;
     paste <(yes "wget" | head -n `cat seeds.txt | wc -l`) seeds.txt -d' ' | parallel -j20;
-
-
 
 ## 推荐资源 ##
     《Unix Shell编程》
