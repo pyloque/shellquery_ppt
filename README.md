@@ -17,7 +17,7 @@
 1. 写命令就像写sql
 2. 写shell脚本就像写存储过程
 
-## 数据 ##
+## 数据样例 ##
     rank_items.txt(258770)
     "5b94c293-bdd0-4569-8203-0dbb9eeab432";"academy_hot_course";"6";"2013-06-03 21:37:41.189835+08";10
     "55a2d8d2-9734-43ba-b8ee-a55fc0596bd4";"hot_question:微观经济学";"469734";"2013-06-05 18:08:05.741067+08";1
@@ -82,7 +82,7 @@
     sed -n -e '/"group_hot_member\:30"\;/ p' rank_items.txt 
     | awk -F';' '{a[$3]+=$5}END{for(i in a)print i,a[i]}' 
     | awk -F' ' '$2 > 80 {print $0}' 
-    |sort -t' ' -n -r -k 2 | head -n 10
+    | sort -t' ' -n -r -k 2 | head -n 10
 
 ##  活跃小组按总分倒排 ##
     select substr(rank_name,18) group_id, sum(score) total_score
@@ -99,13 +99,14 @@
 
 ## 活跃小组按总分倒排（显示小组名称） ##
     select b.group_id,a.total_score from(
-    select substr(rank_name,18) group_id, sum(score) total_score
-    from rank_item
-    where rank_name like 'group_hot_member:%'
-    group by group_id
-    order by total_score desc
-    limit 100
+        select substr(rank_name,18) group_id, sum(score) total_score
+        from rank_item
+        where rank_name like 'group_hot_member:%'
+        group by group_id
+        order by total_score desc
+        limit 100
     ) a join group b on a.group_id=b.id
+    order by a.total_score desc
 
     sed -n -e '/"group_hot_member\:/ p' rank_items.txt 
     | cut -d';' -f2,5 | sed -e s/\"//g -e 's/group_hot_member\://g' 
