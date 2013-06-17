@@ -43,8 +43,8 @@
     select count(1) from rank_item
 
     wc -l rank_items.txt | cut -d' ' -f1
-
     cat rank_items.txt | wc -l
+    wc -l < rank_items.txt
 
 ## 性情小组活跃用户数量 ##
     select count(distinct(object_name))
