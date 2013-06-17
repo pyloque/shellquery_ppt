@@ -1,4 +1,11 @@
-## sql与shell对应关系 ##
+## 说明 ##
+1. 知道的命令太少，受限
+2. 知道的命令太多，参数太多，自由度太大，选择太多，无所适从
+3. 基础模式，告诉你如何选择命令
+4. 写命令就像写sql
+5. 写shell脚本就像写存储过程
+
+## sql与shell command对应关系 ##
     table   file || /tmp/file ==> data source
     select  cut -d';' -f1,2 || awk -F';' {print $1';'$2} ==> map
     filter  sed -n -e '/pattern/' || awk -F';' '$2 > 20 {print $0}' ==> filter
@@ -12,10 +19,6 @@
     insert sed '/pattern/ a new line content' -i ==> insert
     delete sed '/pattern/ d' -i ==> delete
 
-## 类比 ##
-
-1. 写命令就像写sql
-2. 写shell脚本就像写存储过程
 
 ## 数据样例 ##
     rank_items.txt(258770)
@@ -130,7 +133,7 @@
     parallel 并行计算
     awk '{system("cmd")}' 逐行调用外部命令
 
-## 牛逼的管道合并和分流操作符 ##
+## NB的管道合并和分流操作符 ##
     <()
     cat <(command1) <(command2)
     paste <(command1) <(command2)
