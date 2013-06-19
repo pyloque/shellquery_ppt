@@ -8,7 +8,7 @@
 ## sql与shell command对应关系 ##
     table   file || /tmp/file ==> data source
     select  cut -d';' -f1,2 || awk -F';' {print $1';'$2} ==> map
-    filter  sed -n -e '/pattern/' || awk -F';' '$2 > 20 {print $0}' ==> filter
+    filter  sed -n -e '/pattern/ p' || awk -F';' '$2 > 20 {print $0}' ==> filter
     group_by    awk '{a[$2] += $3}END{for(i in a)print i";"a[i]}' ==> reduce
     order_by    sort -r -k2,3 -n ==> sort
     join    join -t';' -1 1 -2 1 -o 1.1 2.2 file1 file2 ==> join
